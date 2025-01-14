@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-map = "map1"
+map = "map2"
 
 replay = Replay.from_path("C:\\Users\\Yile0\\Downloads\\"+ map + ".osr")
 
@@ -18,7 +18,7 @@ timer = 0
 # first frame for ease.
 # 130 for map 1
 # 78 for map 2
-FIRST = 123
+FIRST = 130
 
 # FPS of recording
 FPS = 60
