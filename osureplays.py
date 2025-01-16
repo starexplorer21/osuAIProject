@@ -66,7 +66,7 @@ for val in range(0, len(data)):
         dsyncs.append(timer - math.floor((timer * 0.001) * FPS) * 16.66666)
 
         plt.imshow(img)
-        plt.plot(x * 1.5625 + 5, y * 1.5625 + 5, "bo")
+        plt.plot(x * 1.5625, y * 1.5625, "bo")
         plt.show()
 
 
