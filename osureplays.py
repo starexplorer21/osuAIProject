@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-map = "map2"
+map = "map1"
 
 replay = Replay.from_path("C:\\Users\\Yile0\\Downloads\\"+ map + ".osr")
 
@@ -22,6 +22,8 @@ FIRST = 130
 
 # FPS of recording
 FPS = 60
+
+video_output = cv2.VideoWriter("dsync_video.avi",cv2.VideoWriter_fourcc(*'DIVX'), 60, (800, 600))
 
 FOLDER_PATH = "C:/Users/Yile0/PycharmProjects/osutime/frames/"+ map + "/"
 
@@ -65,9 +67,13 @@ for val in range(0, len(data)):
 
         dsyncs.append(timer - math.floor((timer * 0.001) * FPS) * 16.66666)
 
-        plt.imshow(img)
-        plt.plot(x * 1.5625, y * 1.5625, "bo")
-        plt.show()
+        frame = cv2.imread(FOLDER_PATH + str(nearest_frame) + ".png")
+
+        frame = cv2.circle(frame,(int(x*1.5625),int(y*1.5625)),20, (0,255,0), -1)
+
+        video_output.write(frame)
+
+
 
 
         # if there aren't enough frames, then pad with the first frame
@@ -76,7 +82,7 @@ for val in range(0, len(data)):
         for i in range(4):
             if nearest_frame - i > 0 and nearest_frame - i + FIRST < len(data):
                 row['frame ' + str(4 - i)] = FOLDER_PATH + str(nearest_frame - i + FIRST) + ".png"
-            elif nearest_frame - i + FIRST < 5348:
+            elif nearest_frame - i + FIRST < 8891:
                 row['frame ' + str(4 - i)] = FOLDER_PATH + str(FIRST) + ".png"
             else:
                 row['frame ' + str(4 - i)] = FOLDER_PATH + str(8891) + ".png"
@@ -85,6 +91,7 @@ for val in range(0, len(data)):
 
 plt.plot(dsyncs)
 plt.show()
+video_output.close()
 
 print(output[:10])
 
