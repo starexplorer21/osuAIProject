@@ -5,6 +5,7 @@ from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+from tqdm import tqdm
 
 map = "map1"
 
@@ -39,10 +40,9 @@ output = []
 dsyncs = []
 print(replay.replay_data[len(replay.replay_data)-1])
 
-for val in range(0, len(data)):
-    print(val)
+for val in tqdm(range(0, len(data))):
     input = data[val]
-    time = input.time_delta
+    time = int(input.time_delta)
     x = input.x
     y = input.y
     # disregard keys for now, playing with relax mode to
@@ -56,7 +56,7 @@ for val in range(0, len(data)):
 
     # 1000 is ms in second.
     # this find the latests closest frame
-
+    #
     if val % 3 != 0:
         timer += time
     nearest_frame = math.floor((timer * 0.001) * FPS) + FIRST
@@ -80,10 +80,10 @@ for val in range(0, len(data)):
         # this is because this case only arises for the first 4 inputs.
 
         for i in range(4):
-            if nearest_frame - i > 0 and nearest_frame - i + FIRST < len(data):
+            if nearest_frame - i > 0 and nearest_frame - i + FIRST < 8891:
                 row['frame ' + str(4 - i)] = FOLDER_PATH + str(nearest_frame - i + FIRST) + ".png"
             elif nearest_frame - i + FIRST < 8891:
-                row['frame ' + str(4 - i)] = FOLDER_PATH + str(FIRST) + ".png"
+                row['frame ' + str(4 - i)] = FOLDER_PATH + str(nearest_frame - i + FIRST) + ".png"
             else:
                 row['frame ' + str(4 - i)] = FOLDER_PATH + str(8891) + ".png"
 
