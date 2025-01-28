@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 import math
 from tqdm import tqdm
 
+# ok so for every frame I know the average time between a frame.
+# let's just use that and then work it out from there.
+
 map = "map1"
 
 replay = Replay.from_path("C:\\Users\\Yile0\\Downloads\\"+ map + ".osr")
@@ -19,7 +22,7 @@ timer = 0
 # first frame for ease.
 # 130 for map 1
 # 78 for map 2
-FIRST = 130
+FIRST = 78
 
 # FPS of recording
 FPS = 60
@@ -38,11 +41,15 @@ print(len(replay.replay_data))
 output = []
 
 dsyncs = []
+
+frame_timer = FIRST
 print(replay.replay_data[len(replay.replay_data)-1])
+
+overhead = 0
 
 for val in tqdm(range(0, len(data))):
     input = data[val]
-    time = int(input.time_delta)
+    time = input.time_delta
     x = input.x
     y = input.y
     # disregard keys for now, playing with relax mode to
@@ -58,8 +65,13 @@ for val in tqdm(range(0, len(data))):
     # this find the latests closest frame
     #
     # if val % 3 != 0:
-    timer += time
-    nearest_frame = math.floor((timer * 0.001) * FPS) + FIRST
+    timer += 23.0
+
+    overhead += time - 16.6666
+
+    time_since = time + overhead
+
+    nearest_frame = frame_timer
 
     if val % 4 != 0:
         # show image with x y for lining up
@@ -90,19 +102,7 @@ for val in tqdm(range(0, len(data))):
 
         output.append(row)
 
-plt.plot(dsyncs)
-plt.show()
-video_output.close()
+video_output.release()
 
 print(output[:10])
 
-fields = ['x', 'y', 'frame 4', 'frame 3', 'frame 2', 'frame 1']
-
-filename = map + "_data.csv"
-
-with open(filename, 'w') as csvfile:
-    writer = csv.DictWriter(csvfile, fieldnames=fields)
-
-    writer.writeheader()
-
-    writer.writerows(output)

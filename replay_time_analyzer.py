@@ -6,6 +6,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 from tqdm import tqdm
+import pandas as pd
+import seaborn as sns
 
 map = "map1"
 
@@ -40,16 +42,24 @@ output = []
 frames = []
 print(replay.replay_data[len(replay.replay_data)-1])
 
+differences = []
+
 for val in tqdm(range(0, len(data))):
     input = data[val]
     time = int(input.time_delta)
     output.append(timer)
+    differences.append(time)
     nearest_frame = math.floor(timer * 0.001 * FPS)*1000 / FPS
     frames.append(nearest_frame)
     timer += time
+#
+# plt.plot(output)
+# plt.plot(frames, "g-")
+print(np.array(differences).mean())
+print(np.median(differences))
 
-plt.plot(output)
-plt.plot(frames, "g-")
-
+wr_df = pd.DataFrame({'wr':differences})
+# draw histogram plotting all values in simulation
+plot = sns.histplot(wr_df, x = 'wr', kde = True, color = '#31e6f0')
 plt.show()
 
