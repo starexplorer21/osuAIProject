@@ -22,7 +22,7 @@ timer = 0
 # first frame for ease.
 # 130 for map 1
 # 78 for map 2
-FIRST = 78
+FIRST = 160
 
 # FPS of recording
 FPS = 60
@@ -65,42 +65,34 @@ for val in tqdm(range(0, len(data))):
     # this find the latests closest frame
     #
     # if val % 3 != 0:
-    timer += 23.0
+    timer += time* 0.7333333333
 
-    overhead += time - 16.6666
+    nearest_frame = int(timer // 16.6666)
 
-    time_since = time + overhead
+    # show image with x y for lining up
+    nearest_frame = 8891 if nearest_frame >= 8891 else nearest_frame
+    img = np.asarray(Image.open(FOLDER_PATH + str(nearest_frame) + ".png").convert("L"))
 
-    nearest_frame = frame_timer
+    dsyncs.append(timer - math.floor((timer * 0.001) * FPS) * 23.0)
 
-    if val % 4 != 0:
-        # show image with x y for lining up
-        nearest_frame = 8891 if nearest_frame >= 8891 else nearest_frame
-        img = np.asarray(Image.open(FOLDER_PATH + str(nearest_frame) + ".png").convert("L"))
+    frame = cv2.imread(FOLDER_PATH + str(nearest_frame) + ".png")
 
-        dsyncs.append(timer - math.floor((timer * 0.001) * FPS) * 23.0)
+    frame = cv2.circle(frame,(int(x*1.5625),int(y*1.5625)),20, (0,255,0), -1)
 
-        frame = cv2.imread(FOLDER_PATH + str(nearest_frame) + ".png")
+    video_output.write(frame)
 
-        frame = cv2.circle(frame,(int(x*1.5625),int(y*1.5625)),20, (0,255,0), -1)
+    # if there aren't enough frames, then pad with the first frame
+    # this is because this case only arises for the first 4 inputs.
 
-        video_output.write(frame)
+    for i in range(4):
+        if nearest_frame - i > 0 and nearest_frame - i + FIRST < 8891:
+            row['frame ' + str(4 - i)] = FOLDER_PATH + str(nearest_frame - i + FIRST) + ".png"
+        elif nearest_frame - i + FIRST < 8891:
+            row['frame ' + str(4 - i)] = FOLDER_PATH + str(nearest_frame - i + FIRST) + ".png"
+        else:
+            row['frame ' + str(4 - i)] = FOLDER_PATH + str(8891) + ".png"
 
-
-
-
-        # if there aren't enough frames, then pad with the first frame
-        # this is because this case only arises for the first 4 inputs.
-
-        for i in range(4):
-            if nearest_frame - i > 0 and nearest_frame - i + FIRST < 8891:
-                row['frame ' + str(4 - i)] = FOLDER_PATH + str(nearest_frame - i + FIRST) + ".png"
-            elif nearest_frame - i + FIRST < 8891:
-                row['frame ' + str(4 - i)] = FOLDER_PATH + str(nearest_frame - i + FIRST) + ".png"
-            else:
-                row['frame ' + str(4 - i)] = FOLDER_PATH + str(8891) + ".png"
-
-        output.append(row)
+    output.append(row)
 
 video_output.release()
 
