@@ -19,7 +19,7 @@ timer = 0
 # first frame for ease.
 # 130 for map 1
 # 78 for map 2
-FIRST = 130
+FIRST = 20
 
 # FPS of recording
 FPS = 60

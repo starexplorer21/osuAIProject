@@ -10,7 +10,7 @@ from tqdm import tqdm
 # ok so for every frame I know the average time between a frame.
 # let's just use that and then work it out from there.
 
-map = "map1"
+map = "map2"
 
 replay = Replay.from_path("C:\\Users\\Yile0\\Downloads\\"+ map + ".osr")
 
@@ -22,7 +22,7 @@ timer = 0
 # first frame for ease.
 # 130 for map 1
 # 78 for map 2
-FIRST = 160
+FIRST = 0
 
 # FPS of recording
 FPS = 60
@@ -43,11 +43,11 @@ output = []
 dsyncs = []
 
 frame_timer = FIRST
-print(replay.replay_data[len(replay.replay_data)-1])
+print(replay.replay_data[0:10])
 
 overhead = 0
 
-for val in tqdm(range(0, len(data))):
+for val in tqdm(range(1, len(data))):
     input = data[val]
     time = input.time_delta
     x = input.x
@@ -65,17 +65,18 @@ for val in tqdm(range(0, len(data))):
     # this find the latests closest frame
     #
     # if val % 3 != 0:
-    timer += time* 0.7333333333
+    timer += time * 0.7333333333
 
     nearest_frame = int(timer // 16.6666)
+    print(nearest_frame)
 
     # show image with x y for lining up
     nearest_frame = 8891 if nearest_frame >= 8891 else nearest_frame
-    img = np.asarray(Image.open(FOLDER_PATH + str(nearest_frame) + ".png").convert("L"))
+    img = np.asarray(Image.open(FOLDER_PATH + str(nearest_frame+FIRST) + ".png").convert("L"))
 
     dsyncs.append(timer - math.floor((timer * 0.001) * FPS) * 23.0)
 
-    frame = cv2.imread(FOLDER_PATH + str(nearest_frame) + ".png")
+    frame = cv2.imread(FOLDER_PATH + str(nearest_frame+FIRST) + ".png")
 
     frame = cv2.circle(frame,(int(x*1.5625),int(y*1.5625)),20, (0,255,0), -1)
 
