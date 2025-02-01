@@ -10,7 +10,7 @@ from tqdm import tqdm
 # ok so for every frame I know the average time between a frame.
 # let's just use that and then work it out from there.
 
-map = "map2"
+map = "map1"
 
 replay = Replay.from_path("C:\\Users\\Yile0\\Downloads\\"+ map + ".osr")
 
@@ -20,9 +20,9 @@ timer = 0
 # First frame
 # mass rename takes too much time, so I can just call frame 19 the
 # first frame for ease.
-# 130 for map 1
+# 117 for map 1
 # 78 for map 2
-FIRST = 0
+FIRST = 117
 
 # FPS of recording
 FPS = 60
@@ -65,10 +65,9 @@ for val in tqdm(range(1, len(data))):
     # this find the latests closest frame
     #
     # if val % 3 != 0:
-    timer += time * 0.7333333333
+    timer += time * 0.6666
 
     nearest_frame = int(timer // 16.6666)
-    print(nearest_frame)
 
     # show image with x y for lining up
     nearest_frame = 8891 if nearest_frame >= 8891 else nearest_frame
