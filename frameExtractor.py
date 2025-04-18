@@ -3,36 +3,34 @@
 
 import cv2
 
+def video_to_frames(video_path, output_dir, frame_rate=30):
+    """
+    Extracts frames from a video and saves them as images.
 
-# Function to extract frames
-def FrameCapture(path):
-    # Path to video file
-    vidObj = cv2.VideoCapture(path)
-    vidObj.open(path)
+    Args:
+        video_path (str): Path to the input video file.
+        output_dir (str): Path to the directory where frames will be saved.
+        frame_rate (int, optional): Desired frame rate for extraction. Defaults to 30.
+    """
+    video_capture = cv2.VideoCapture(video_path)
+    if not video_capture.isOpened():
+        raise Exception("Could not open video file.")
 
-    # Used as counter variable
-    count = 0
+    frame_count = 0
+    while True:
+        success, frame = video_capture.read()
+        if not success:
+            break
 
-    # checks whether frames were extracted
-    success = 1
+        if frame_count % int(video_capture.get(cv2.CAP_PROP_FPS) / frame_rate) == 0:
+            output_path = f"{output_dir}/frame_{frame_count:04d}.jpg"
+            cv2.imwrite(output_path, frame)
+        frame_count += 1
 
-    while success:
-        # vidObj object calls read
-        # function extract frames
-        success, image = vidObj.read()
+    video_capture.release()
+    print(f"Extracted {frame_count} frames to {output_dir}")
 
-        gray_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-        # Display the recording screen
-        cv2.imshow('resized_gray', gray_frame)
-
-        # Saves the frames with frame-count
-        cv2.imwrite("C:\\Users\\Yile0\\PycharmProjects\\osutime\\frames\\map5\\%d.png" % count, gray_frame)
-
-        count += 1
-
-
-# Driver Code
-if __name__ == '__main__':
-    # Calling the function
-    FrameCapture("C:\\Users\\Yile0\\Downloads\\2024-12-08 23-22-28.mp4")
+if __name__ == "__main__":
+    video_file = "C:/Users/Yile0/Downloads/2024-12-08 23-32-20.mp4"
+    output_directory = "C:/Users/Yile0/PycharmProjects/osutime/frames/map1"
+    video_to_frames(video_file, output_directory)

@@ -32,7 +32,7 @@ video_output = cv2.VideoWriter("dsync_video.avi",cv2.VideoWriter_fourcc(*'DIVX')
 FOLDER_PATH = "C:/Users/Yile0/PycharmProjects/osutime/frames/"+ map + "/"
 
 # toss the first one because it doesn't make any sense
-data = replay.replay_data[2:len(replay.replay_data)-10]
+data = replay.replay_data[1:len(replay.replay_data)]
 
 print(len(data))
 
@@ -46,6 +46,7 @@ frame_timer = FIRST
 print(replay.replay_data[0:10])
 
 overhead = 0
+nearest_frame = 0
 
 for val in tqdm(range(1, len(data))):
     input = data[val]
@@ -67,13 +68,11 @@ for val in tqdm(range(1, len(data))):
     # if val % 3 != 0:
     timer += time * 0.6666
 
-    nearest_frame = int(timer // 16.6666)
+    nearest_frame = int(math.floor(timer // 16.7))
 
     # show image with x y for lining up
     nearest_frame = 8891 if nearest_frame >= 8891 else nearest_frame
     img = np.asarray(Image.open(FOLDER_PATH + str(nearest_frame+FIRST) + ".png").convert("L"))
-
-    dsyncs.append(timer - math.floor((timer * 0.001) * FPS) * 23.0)
 
     frame = cv2.imread(FOLDER_PATH + str(nearest_frame+FIRST) + ".png")
 
@@ -90,6 +89,7 @@ for val in tqdm(range(1, len(data))):
         elif nearest_frame - i + FIRST < 8891:
             row['frame ' + str(4 - i)] = FOLDER_PATH + str(nearest_frame - i + FIRST) + ".png"
         else:
+            print(val)
             row['frame ' + str(4 - i)] = FOLDER_PATH + str(8891) + ".png"
 
     output.append(row)
@@ -97,4 +97,17 @@ for val in tqdm(range(1, len(data))):
 video_output.release()
 
 print(output[:10])
+print(nearest_frame)
+
+fields = ['x', 'y', 'frame 4', 'frame 3', 'frame 2', 'frame 1']
+
+filename = map + "_data.csv"
+
+with open(filename, 'w') as csvfile:
+    writer = csv.DictWriter(csvfile, fieldnames=fields)
+
+    writer.writeheader()
+
+    writer.writerows(output)
+
 
